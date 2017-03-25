@@ -274,6 +274,26 @@
           </template>
         </template>
       </demo-snippet>
+      <h4>Dynamic sort with remote data</h4>
+      <demo-snippet>
+        <template>
+          <template is="dom-bind">
+            <iron-ajax auto url="users.json" last-response="{{users}}"></iron-ajax>
+
+            <brainy-table id="dynamic-sort" dynamic-sort sort-path="[[__sort.path]]" sort-direction="[[__sort.direction]]" on-sort-direction-changed="_columnSorted" items="[[users.data]]">
+              <brainy-table-column name="First Name" filter-by="user.name.first" sort-by="user.name.first">
+                <template>[[item.user.name.first]]</template>
+              </brainy-table-column>
+              <brainy-table-column name="Last Name" sort-by="user.name.last" align-right>
+                <template>[[item.user.name.last]]</template>
+              </brainy-table-column>
+              <brainy-table-column name="Email">
+                <template>[[item.user.email]]</template>
+              </brainy-table-column>
+            </brainy-table>
+          </template>
+        </template>
+      </demo-snippet>
     </div>
     <div tab="details">
       <h4>Row details</h4>
@@ -469,6 +489,20 @@
       tabs.addEventListener('iron-select', function(e) {
         document.getElementById('pages').select(e.detail.item.getAttribute('tab'));
       });
+
+      var dynamicSortTable = document.getElementById('dynamic-sort');
+      dynamicSortTable.sort = {
+        path: null,
+        direction: null
+      };
+      dynamicSortTable.currentSort = {
+        path: null,
+        direction: null
+      };
+      dynamicSortTable._columnSorted = function(e) {
+
+      }.bind(dynamicSortTable);
+
     });
   </script>
 </body>
