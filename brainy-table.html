@@ -188,6 +188,7 @@ Custom property                          | Description                          
         <brainy-tr header>
           <template is="dom-repeat" items="[[columns]]" as="column">
             <brainy-th
+              dynamic-sort="[[dynamicSort]]"
               align-right="[[column.alignRight]]"
               column="[[column]]"
               flex="[[column.flex]]"
