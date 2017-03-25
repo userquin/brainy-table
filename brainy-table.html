@@ -413,6 +413,15 @@ Custom property                          | Description                          
           },
 
           /**
+           * If `true`, the sort is dynamic.
+           */
+          dynamicSort: {
+              type: Boolean,
+              notify: true,
+              value: false
+          },
+
+          /**
            * A string indicating sort direction.
            */
           sortDirection: {
@@ -637,12 +646,29 @@ Custom property                          | Description                          
           this.debounce('scrolling', this._checkScroll);
         },
 
+        __preventSort: false,
         _sortDirectionChanged: function(e) {
-          this.sortPath = e.detail.path;
-          if (e.detail.direction) {
-            this.sortDirection = e.detail.direction;
-          } else {
-            this.sortDirection = null;
+          var change = true;
+          if(this.dynamicSort) {
+            if(this.__preventSort) {
+              this.__preventSort = false;
+              change = false;
+            } else {
+              if(e.currentTarget.nodeName.toUpperCase() == 'BRAINY-TH') {
+                change = false;
+                e.preventDefault();
+              } else {
+                this.__preventSort = true;
+              }
+            }
+          }
+          if(change) {
+            this.sortPath = e.detail.path;
+            if (e.detail.direction) {
+              this.sortDirection = e.detail.direction;
+            } else {
+              this.sortDirection = null;
+            }
           }
         },
 

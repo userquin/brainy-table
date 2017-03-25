@@ -77,6 +77,10 @@
         properties: {
           currentSortPath: String,
           currentSortDirection: String,
+          dynamicSort: {
+              type: Boolean,
+              value: false
+          },
           direction: {
             type: String,
             reflectToAttribute: true
@@ -122,24 +126,47 @@
         },
 
         _sort: function() {
-          switch (this.direction) {
-            case 'asc':
-              this.direction = 'desc';
-              break;
+          if(this.dynamicSort) {
+              var newDirection;
+              switch (this.direction) {
+                  case 'asc':
+                      newDirection = 'desc';
+                      break;
 
-            case 'desc':
-              this.direction = null;
-              break;
+                  case 'desc':
+                      newDirection = null;
+                      break;
 
-            default:
-              this.direction = 'asc';
-              break;
+                  default:
+                      newDirection = 'asc';
+                      break;
+              }
+              this.fire('sort-direction-changed', {
+                  path: this.sortBy,
+                  direction: newDirection
+              }, {
+                  bubbles: true
+              });
+          } else {
+              switch (this.direction) {
+                case 'asc':
+                  this.direction = 'desc';
+                  break;
+
+                case 'desc':
+                  this.direction = null;
+                  break;
+
+                default:
+                  this.direction = 'asc';
+                  break;
+              }
+
+              this.fire('sort-direction-changed', {
+                path: this.sortBy,
+                direction: this.direction
+              });
           }
-
-          this.fire('sort-direction-changed', {
-            path: this.sortBy,
-            direction: this.direction
-          });
 
           this.$.ripple.simulatedRipple();
         }
